@@ -1,4 +1,4 @@
-const websocketUrl = "ws://192.168.1.14:5000"
+const websocketUrl = "wss://" + window.location.host + "/checkbox/ws"
 const checkboxElem = document.getElementById("theCheckbox");
 const socket = new WebSocket(websocketUrl);
 

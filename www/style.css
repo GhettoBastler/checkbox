@@ -11,8 +11,8 @@ body {
 
 header {
     display: flex;
-    flex-flow: row;
-    justify-content: center;
+    flex-flow: column;
+    align-items: center;
     border-style: dotted;
     border-width: 0 0 3px 0;
     padding: 10px 0 10px 0;
@@ -27,6 +27,16 @@ main {
     flex-flow: column;
     align-items: center;
 }
+
+a {
+    color: #ea1067;
+}
+
+a:visited {
+    color: #c3dce5;
+
+}
+
 
 #theCheckbox {
     width: 40px;
