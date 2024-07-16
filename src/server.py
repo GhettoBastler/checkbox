@@ -39,7 +39,7 @@ async def handler(websocket):
                     continue
 
                 if "state" in message:
-                    if type(message["state"]) != bool:
+                    if not isinstance(message["state"], bool):
                         # Ignore message
                         print("State field is not a boolean")
                         continue
@@ -67,6 +67,7 @@ async def handler(websocket):
             print(e)
             connections.remove(websocket)
             break
+
 
 async def main(host, port):
     async with websockets.serve(handler, host, port):
