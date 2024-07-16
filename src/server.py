@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 
+import time
 import argparse
 import asyncio
 import websockets
@@ -13,6 +14,21 @@ connections = set()
 class StateFlag:
     def __init__(self, start_state):
         self.state = start_state
+        self.timestamp = time.time()
+
+
+    def set_state(self, new_state):
+        self.state = new_state
+        self.timestamp = time.time()
+
+
+    def get_message(self):
+        return json.dumps(
+            {
+                "state": self.state,
+                "timestamp": self.timestamp
+            }
+        )
 
 
 state_flag = StateFlag(False)
@@ -44,12 +60,11 @@ async def handler(websocket):
                         print("State field is not a boolean")
                         continue
 
-                    state_flag.state = message["state"]
+                    state_flag.set_state(message["state"])
 
                 elif "ask" in message:
                     # Telling the state
-                    response = json.dumps({"state": state_flag.state})
-                    await websocket.send(response)
+                    await websocket.send(state_flag.get_message())
                     continue
 
             except json.decoder.JSONDecodeError:
@@ -58,8 +73,7 @@ async def handler(websocket):
                 continue
 
             # Broadcast
-            broadcast_message = json.dumps({"state": state_flag.state})
-
+            broadcast_message = state_flag.get_message()
             for conn in connections:
                 await conn.send(broadcast_message)
 

@@ -41,5 +41,10 @@ a:visited {
 #theCheckbox {
     width: 40px;
     height: 40px;
-    margin: 60px;
+    margin: 60px 0 30px 0;
+}
+
+#theMessage {
+    color: #5e6d72;   
+    font-style: italic;
 }
