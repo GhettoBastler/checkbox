@@ -1,5 +1,4 @@
 body,h1,h2,h3,h4,h5,h6,hr,p,figure,blockquote,dl,dd{margin:0; font-size:17px;}
-
 body {
     display: grid;
     height: 100vh;
@@ -44,7 +43,25 @@ a:visited {
     margin: 60px 0 30px 0;
 }
 
+#theCheckbox.just {
+    box-shadow: 0 0 20px #ffffff88;
+}
+
+#theCheckbox.old {
+    transition: box-shadow 2s ease-out;
+}
+
 #theMessage {
-    color: #5e6d72;   
     font-style: italic;
+    color: #5e6d72;   
+    text-shadow: 0 -20px #00000000;
+}
+
+#theMessage.just{
+    color: #f4d81d;
+    text-shadow: 0 0 #ffffff88;
+}
+
+#theMessage.old{
+    transition: color 2s ease-out, text-shadow 1s ease-out;
 }

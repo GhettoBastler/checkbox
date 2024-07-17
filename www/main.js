@@ -3,61 +3,65 @@ const checkboxElem = document.getElementById("theCheckbox");
 const messageElem = document.getElementById("theMessage");
 const socket = new WebSocket(websocketUrl);
 
-var lastTimestamp = 0;
+var lastTimestamp;
+var lastState;
 
-function getElapsedTime(timestamp){
+function formatElapsedTime(interval){
+    function euclidianDiv(dividend, divisor){
+        var quotient = Math.floor(dividend/divisor);
+        var remainder = dividend - divisor * quotient;
+        return [quotient, remainder];
+    }
+
+    var divisors = [
+        [31536000, "year", "years"],
+        [2592000, "month", "months"],
+        [86400, "day", "days"],
+        [3600, "hour", "hours"],
+        [60, "minute", "minutes"],
+        [1, "second", "seconds"],
+    ]
+
+    var quotient;
     var res = "";
-    var interval = Date.now()/1000 - timestamp;
-    var years = Math.floor(interval / 31536000);
-    if (years > 1)
-        res = years + " years";
-    else if (years == 1)
-        res = years + " year";
-    interval -= years * 31536000;
-
-    var months = Math.floor(interval / 2592000);
-    if (months > 1)
-        res = months + " months";
-    else if (months == 1)
-        res = months + " month";
-    interval -= months * 2592000;
-
-    var days = Math.floor(interval / 86400);
-    if (days > 1)
-        res = days + " days";
-    else if (days == 1)
-        res = days + " day";
-    interval -= days * 86400;
-
-    var hours = Math.floor(interval / 3600);
-    if (hours > 1)
-        res = hours + " hours";
-    else if (hours == 1)
-        res = hours + " hour";
-    interval -= hours * 3600;
-
-    var minutes = Math.floor(interval / 60);
-    if (minutes > 1)
-        res = minutes + " minutes";
-    else if (minutes == 1)
-        res = minutes + " minute";
-
-    var seconds = Math.floor(interval - minutes * 60);
-    if (seconds > 1)
-        res = seconds + " seconds";
-    else
-        res = seconds + " second";
+    for (let i=0; i < divisors.length; i++){
+        [quotient, interval] = euclidianDiv(interval, divisors[i][0])
+        if (quotient == 1)
+            res += " " + quotient + " " + divisors[i][1];
+        else if (quotient > 1)
+            res += " " + quotient + " " + divisors[i][2];
+    }
 
     return res;
 }
 
 function updateMessage(){
-    var message;
-    if (checkboxElem.checked)
-        message = "Checked "
-    else
-        message = "Unchecked "
-    message += getElapsedTime(lastTimestamp) + " ago";
+    var message = "";
+    if (lastTimestamp){
+        if (checkboxElem.checked)
+            message = "checked";
+        else
+            message = "unchecked";
+        var interval = Date.now()/1000 - lastTimestamp;
+        if (interval <= 1){
+            message = "just " + message;
+            if (checkboxElem.checked != lastState){
+                // Flash
+                checkboxElem.setAttribute("class", "just");
+                messageElem.setAttribute("class", "just");
+                setTimeout(() => {
+                    messageElem.setAttribute("class", "old");
+                    checkboxElem.setAttribute("class", "old");
+                }, 1);
+            }
+        }else{
+            message += " " + formatElapsedTime(interval) + " ago";
+            messageElem.setAttribute("class", "old");
+        }
+
+        message = message.charAt(0).toUpperCase() + message.slice(1);
+        lastState = checkboxElem.checked;
+    }
     messageElem.innerHTML = message;
 }
 
