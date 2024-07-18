@@ -23,13 +23,14 @@ function formatElapsedTime(interval){
     ]
 
     var quotient;
-    var res = "";
     for (let i=0; i < divisors.length; i++){
         [quotient, interval] = euclidianDiv(interval, divisors[i][0])
-        if (quotient == 1)
-            res += " " + quotient + " " + divisors[i][1];
-        else if (quotient > 1)
-            res += " " + quotient + " " + divisors[i][2];
+        if (quotient > 0){
+            if (quotient == 1)
+                return quotient + " " + divisors[i][1];
+            else if (quotient > 1)
+                return quotient + " " + divisors[i][2];
+        }
     }
 
     return res;
