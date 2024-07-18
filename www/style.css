@@ -25,6 +25,7 @@ main {
     display: flex;
     flex-flow: column;
     align-items: center;
+    height: 100%;
 }
 
 a {
@@ -34,6 +35,10 @@ a {
 a:visited {
     color: #c3dce5;
 
+}
+
+#sourceLink {
+    margin-top: 100px;
 }
 
 
