@@ -66,24 +66,23 @@ function updateMessage(){
     messageElem.innerHTML = message;
 }
 
-socket.addEventListener("message", (event) => {
-    console.log("recieved: " + event.data);
-    var data = JSON.parse(event.data);
-    checkboxElem.checked = data["state"];
-    lastTimestamp = data["timestamp"];
-    updateMessage();
-});
-
-checkboxElem.addEventListener("click", (event) => {
-    var message = { "state": checkboxElem.checked };
-    socket.send(JSON.stringify(message));
-    lastTimestamp = Date.now() / 1000;
-    updateMessage();
-});
-
-setInterval(updateMessage, 1000);
-
 // Checking current state
 socket.onopen = () => {
-    socket.send(JSON.stringify({ "ask": "" }))
+    socket.addEventListener("message", (event) => {
+        console.log("recieved: " + event.data);
+        var data = JSON.parse(event.data);
+        checkboxElem.checked = data["state"];
+        lastTimestamp = data["timestamp"];
+        updateMessage();
+    });
+
+    checkboxElem.addEventListener("click", (event) => {
+        var message = { "type": "set", "state": checkboxElem.checked };
+        socket.send(JSON.stringify(message));
+        lastTimestamp = Date.now() / 1000;
+        updateMessage();
+    });
+
+    socket.send(JSON.stringify({ "type": "ask" }))
+    setInterval(updateMessage, 1000);
 };
